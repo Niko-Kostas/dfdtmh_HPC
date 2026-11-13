@@ -1,4 +1,8 @@
-# dfdtmh_HPC - Design for Debug Tailor Made Hardware Performance Counters (dfdtmh HPC's)
+# dfdtmh_HPC – Design-for-Debug Tailor-Made Hardware Performance Counters
+
+SystemVerilog implementation of a Design-for-Debug inspired set of **Hardware Performance Counters** (HPCs) for the CVA6/Ariane core.
+
+---
 
 ### 2. File list (RTL + testbenches)
 
@@ -12,18 +16,21 @@
 | `cva6_dfdtmh_unit.sv` | Top-level unit |
 | `tb_dfdtmh_*.sv` | Self-checking testbenches |
 
-### 3. Running Verilator
+###3 Reproducible Simulation Flow
 
-Running Script:
+All testbenches are self-checking. A successful run ends with a clear **PASS** message. Any mismatch against the reference model prints a `FAIL:` line.
+
+### Prepare the file list
 
 ```bash
-cat > sim/run_dfdtmh.sh <<'SCRIPT'
-#!/usr/bin/env bash
-# usage: bash run_dfdtmh.sh tb_dfdtmh_event_gen
-cd "$(dirname "$0")"
-source ./tsmc65.sh
-tb=$1
-cat > /tmp/files_$tb.f <<EOF
+cd ~/tailor_made_hpc_cva6/sim
+cp files.f files_dfdtmh.f
+nano files_dfdtmh.f
+```
+Put the following content into files_dfdtmh.f
+(the last line must be the testbench you want to run):
+
+```bash
 ../include/ariane_pkg_stub.sv
 ../include/dfdtmh_pkg.sv
 ../rtl/dfdtmh_event_gen.sv
@@ -31,7 +38,22 @@ cat > /tmp/files_$tb.f <<EOF
 ../rtl/dfdtmh_ctrl_fsm.sv
 ../rtl/dfdtmh_csr.sv
 ../rtl/cva6_dfdtmh_unit.sv
-../tb/$tb.sv
-EOF
-xrun -sv -access +rwc -timescale 1ns/1ps -f /tmp/files_$tb.f -top $tb
-SCRIPT
+../tb/tb_dfdtmh_unit.sv          # ← change this line for other testbenches
+```
+### Run Simulation:
+from the sim/ directory:
+```bash
+source tsmc65.sh
+xrun -sv -access +rwc -timescale 1ns/1ps -f files_dfdtmh.f -top tb_dfdtmh_unit
+```
+Waveform Dumping:
+To generate VCD and open SimVision:
+```bash
+xrun -sv -access +rwc -timescale 1ns/1ps -f files_dfdtmh.f -top tb_dfdtmh_unit +FULLDUMP
+simvision cva6_dfdtmh_unit.vcd &
+```
+
+Notes:
+Currently only dfdtmh_unit tb has waveform
+Still in process of analyzing waveform and editing RTL code
+
