@@ -1,17 +1,4 @@
 # dfdtmh_HPC - Design for Debug Tailor Made Hardware Performance Counters (dfdtmh HPC's)
-Design for debug - tailor made HPC project.
-
-
-(or the equivalent message printed by the individual testbench). Any mismatch against the reference model prints a `FAIL:` line and increments an error counter.
-
-### 1. Prerequisites
-
-- A SystemVerilog simulator that supports IEEE 1800 (tested / recommended):
-  - **Verilator** (open-source, recommended for quick checks)
-  - Synopsys VCS, Cadence Xcelium, or Siemens Questa
-- The files in this repository (no external IP is required for the unit-level testbenches).
-
-> Note: `tb_dfdtmh_unit.sv` imports `ariane_pkg::*`. A minimal stub (`ariane_pkg_stub.sv`) is provided so the testbench can be compiled standalone.
 
 ### 2. File list (RTL + testbenches)
 
@@ -25,19 +12,26 @@ Design for debug - tailor made HPC project.
 | `cva6_dfdtmh_unit.sv` | Top-level unit |
 | `tb_dfdtmh_*.sv` | Self-checking testbenches |
 
-### 3. Running with Verilator (example)
+### 3. Running Verilator
+
+Running Script:
 
 ```bash
-# Example for the top-level unit testbench
-verilator --binary -Wall --timing \
-  --top-module tb_dfdtmh_unit \
-  ariane_pkg_stub.sv \
-  dfdtmh_pkg.sv \
-  dfdtmh_event_gen.sv \
-  dfdtmh_ctrl_fsm.sv \
-  dfdtmh_counter_bank.sv \
-  dfdtmh_csr.sv \
-  cva6_dfdtmh_unit.sv \
-  tb_dfdtmh_unit.sv
-
-./obj_dir/Vtb_dfdtmh_unit
+cat > sim/run_dfdtmh.sh <<'SCRIPT'
+#!/usr/bin/env bash
+# usage: bash run_dfdtmh.sh tb_dfdtmh_event_gen
+cd "$(dirname "$0")"
+source ./tsmc65.sh
+tb=$1
+cat > /tmp/files_$tb.f <<EOF
+../include/ariane_pkg_stub.sv
+../include/dfdtmh_pkg.sv
+../rtl/dfdtmh_event_gen.sv
+../rtl/dfdtmh_counter_bank.sv
+../rtl/dfdtmh_ctrl_fsm.sv
+../rtl/dfdtmh_csr.sv
+../rtl/cva6_dfdtmh_unit.sv
+../tb/$tb.sv
+EOF
+xrun -sv -access +rwc -timescale 1ns/1ps -f /tmp/files_$tb.f -top $tb
+SCRIPT
