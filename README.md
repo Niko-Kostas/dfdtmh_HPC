@@ -4,7 +4,7 @@ SystemVerilog implementation of a Design-for-Debug inspired set of **Hardware Pe
 
 ---
 
-### 2. File list (RTL + testbenches)
+### 1. File list (RTL + testbenches)
 
 | File | Description |
 |------|-------------|
@@ -16,7 +16,7 @@ SystemVerilog implementation of a Design-for-Debug inspired set of **Hardware Pe
 | `cva6_dfdtmh_unit.sv` | Top-level unit |
 | `tb_dfdtmh_*.sv` | Self-checking testbenches |
 
-###3 Reproducible Simulation Flow
+### 2. Reproducible Simulation Flow
 
 All testbenches are self-checking. A successful run ends with a clear **PASS** message. Any mismatch against the reference model prints a `FAIL:` line.
 
