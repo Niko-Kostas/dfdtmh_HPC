@@ -102,9 +102,7 @@ module dfdtmh_counter_bank
     if (acc_en_i) begin
       // sensitive counters
       for (int unsigned s = 0; s < NrSens; s++) begin
-        inc = sens_i[s].valid &&
-              (int'(sens_i[s].reg_idx) < int'(RegNum)) &&
-              reg_inc_i[sens_i[s].reg_idx];
+        inc = sens_i[s].valid && (int'(sens_i[s].reg_idx) < int'(RegNum)) && reg_inc_i[sens_i[s].reg_idx];
         sum = {1'b0, cnt_q[s]} + {{CntW{1'b0}}, inc};
         if (sum[CntW]) begin
           a_cnt[s] = {CntW{1'b1}};
@@ -141,18 +139,32 @@ module dfdtmh_counter_bank
       cnt_d[s]  = a_cnt[s];
       scnt_d[s] = scnt_q[s];
     end
-    rmap_d  = a_rmap;  pmap_d  = a_pmap;  mmap_d  = a_mmap;
-    ret_d   = a_ret;   sat_d   = a_sat;
-    srmap_d = srmap_q; spmap_d = spmap_q; smmap_d = smmap_q;
-    sret_d  = sret_q;  ssat_d  = ssat_q;
+    rmap_d  = a_rmap;  
+    pmap_d  = a_pmap; 
+    mmap_d  = a_mmap;
+    ret_d   = a_ret;  
+    sat_d   = a_sat;
+    srmap_d = srmap_q; 
+    spmap_d = spmap_q; 
+    smmap_d = smmap_q;
+    sret_d  = sret_q; 
+    ssat_d  = ssat_q;
 
     if (clear_i) begin
       for (int unsigned s = 0; s < NrSens; s++) begin
         cnt_d[s]  = '0;
         scnt_d[s] = '0;
       end
-      rmap_d  = '0; pmap_d  = '0; mmap_d  = '0; ret_d  = '0; sat_d  = 1'b0;
-      srmap_d = '0; spmap_d = '0; smmap_d = '0; sret_d = '0; ssat_d = 1'b0;
+      rmap_d  = '0;
+      pmap_d  = '0;
+      mmap_d  = '0; 
+      ret_d  = '0;
+      sat_d  = 1'b0;
+      srmap_d = '0; 
+      spmap_d = '0;
+      smmap_d = '0;
+      sret_d = '0; 
+      ssat_d = 1'b0;
     end else if (roll_i) begin
       for (int unsigned s = 0; s < NrSens; s++) begin
         scnt_d[s] = a_cnt[s];
@@ -175,14 +187,27 @@ module dfdtmh_counter_bank
         cnt_q[s]  <= '0;
         scnt_q[s] <= '0;
       end
-      rmap_q  <= '0; pmap_q  <= '0; mmap_q  <= '0; ret_q  <= '0; sat_q  <= 1'b0;
-      srmap_q <= '0; spmap_q <= '0; smmap_q <= '0; sret_q <= '0; ssat_q <= 1'b0;
+      rmap_q  <= '0; pmap_q  <= '0; mmap_q  <= '0;
+      ret_q  <= '0; 
+      sat_q  <= 1'b0;
+      srmap_q <= '0;
+      spmap_q <= '0; 
+      smmap_q <= '0;
+      sret_q <= '0; 
+      ssat_q <= 1'b0;
     end else begin
-      cnt_q   <= cnt_d;    scnt_q  <= scnt_d;
-      rmap_q  <= rmap_d;   pmap_q  <= pmap_d;  mmap_q  <= mmap_d;
-      ret_q   <= ret_d;    sat_q   <= sat_d;
-      srmap_q <= srmap_d;  spmap_q <= spmap_d; smmap_q <= smmap_d;
-      sret_q  <= sret_d;   ssat_q  <= ssat_d;
+      cnt_q   <= cnt_d;   
+      scnt_q  <= scnt_d;
+      rmap_q  <= rmap_d;
+      pmap_q  <= pmap_d; 
+      mmap_q  <= mmap_d;
+      ret_q   <= ret_d; 
+      sat_q   <= sat_d;
+      srmap_q <= srmap_d;
+      spmap_q <= spmap_d;
+      smmap_q <= smmap_d;
+      sret_q  <= sret_d; 
+      ssat_q  <= ssat_d;
     end
   end
 
@@ -203,13 +228,4 @@ module dfdtmh_counter_bank
   assign shadow_sat_o = ssat_q;
 
 endmodule
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-
-module dfdtmh_counter_bank(
-
-    );
-endmodule
